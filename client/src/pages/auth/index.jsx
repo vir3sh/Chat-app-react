@@ -1,7 +1,10 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { toast } from "sonner";
+// import apiClient from "@/lib/api-client";
+// import { SIGNUP_ROUTE } from "@/utils/constant";
 
+import axios from "axios";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -18,18 +21,51 @@ const Auth = () => {
       return false;
     }
     if (password !== confirmpassword) {
-      toast.error("Passwords do not match");
+      toast.error("Passwords should be same");
       return false;
     }
     return true;
   };
   
-const handleSignup = (e) => {
-  e.preventDefault(); // Prevent default form submission behavior
+// const handleSignup = async (e) => {
+//   e.preventDefault(); // Prevent default form submission behavior
+//   if (validateSignup()) {
+//     // alert("done");
+//     await apiClient.post(SIGNUP_ROUTE ,{email,password})
+
+//   }
+// };
+const handleSignup = async (e) => {
+  e.preventDefault(); // Prevent default form submission
+
   if (validateSignup()) {
-    alert("done");
+    try {
+      const response = await axios.post("http://localhost:3001/api/auth/signup", { email, password });
+    
+      if (response.status === 201) {
+        // Display success toast to the user
+        toast.success("Account created successfully!");
+        
+        // Optionally clear form fields or redirect
+        setEmail("");
+        setPassword("");
+        setConfirmpassword("");
+
+        // You can redirect the user or perform other actions if needed
+        // window.location.href = '/login';
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        toast.error("Email already in use. Please try a different one.");
+      } else {
+        toast.error("An error occurred. Please try again later.");
+      }
+    }
   }
 };
+
+
+
 
 
   return (
