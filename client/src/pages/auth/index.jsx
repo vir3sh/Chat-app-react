@@ -26,7 +26,18 @@ const Auth = () => {
     }
     return true;
   };
-  
+  const validateLogin= () => {
+    if (!email) {
+      toast.error("Email is required");
+      return false;
+    }
+    if (!password) {
+      toast.error("Password is required");
+      return false;
+    }
+   
+    return true;
+  };
 // const handleSignup = async (e) => {
 //   e.preventDefault(); // Prevent default form submission behavior
 //   if (validateSignup()) {
@@ -65,11 +76,50 @@ const handleSignup = async (e) => {
 };
 
 
+//  HandleLogin
+const handleLogin = async (e) => {
+  e.preventDefault(); // Prevent default form submission
+
+  if (validateLogin()) {
+    try {
+      const response = await axios.post("http://localhost:3001/api/auth/login",{ email, password } );// Ensure that cookies are sent and received);
+
+
+
+      if (response.status === 200) { // Login typically returns 200 OK
+        // Display success toast to the user
+        toast.success("Login successful!");
+
+        // Optionally clear form fields or redirect
+        setEmail("");
+        setPassword("");
+
+        // Redirect the user or perform other actions if needed
+        // window.location.href = '/dashboard'; // Redirect to a protected page
+      }
+    } catch (error) {
+      if (error.response) {
+        // Handle different HTTP error statuses
+        if (error.response.status === 400) {
+          toast.error("Invalid email or password. Please try again.");
+        } else {
+          toast.error("An error occured . Please try again later.");
+        }
+      } else {
+        // Handle network or other errors
+        toast.error("An error . Please try again later.");
+      }
+    }
+  }
+};
+
+
+
 
 
 
   return (
-    <div className="min-h-screen flex justify-center items-center">
+    <div className="min-h-screen flex justify-center items-center" style={{backgroundColor:"#1e1b1b"}}>
       <div className="flex justify-center items-center w-full max-w-4xl bg-white p-8 rounded-lg shadow-lg">
         {/* Left Side: Text and Form */}
         <div>
@@ -153,7 +203,7 @@ const handleSignup = async (e) => {
               </form>
             </TabsContent>
             <TabsContent value="password">
-              <form className="space-y-4"  onSubmit={handleSignup}>
+              <form className="space-y-4"  onSubmit={handleLogin}>
                 <div>
                   <label
                     htmlFor="email"
