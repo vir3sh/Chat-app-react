@@ -1,10 +1,36 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
+import { toast } from "sonner";
+
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmpassword] = useState("");
+
+  const validateSignup = () => {
+    if (!email) {
+      toast.error("Email is required");
+      return false;
+    }
+    if (!password) {
+      toast.error("Password is required");
+      return false;
+    }
+    if (password !== confirmpassword) {
+      toast.error("Passwords do not match");
+      return false;
+    }
+    return true;
+  };
+  
+const handleSignup = (e) => {
+  e.preventDefault(); // Prevent default form submission behavior
+  if (validateSignup()) {
+    alert("done");
+  }
+};
+
 
   return (
     <div className="min-h-screen flex justify-center items-center">
@@ -30,7 +56,7 @@ const Auth = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="account">
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleSignup}>
                 <div>
                   <label
                     htmlFor="email"
@@ -91,7 +117,7 @@ const Auth = () => {
               </form>
             </TabsContent>
             <TabsContent value="password">
-              <form className="space-y-4">
+              <form className="space-y-4"  onSubmit={handleSignup}>
                 <div>
                   <label
                     htmlFor="email"
@@ -125,6 +151,11 @@ const Auth = () => {
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
+                <div>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                </div>
 
                 <button
                   type="submit"
@@ -138,7 +169,7 @@ const Auth = () => {
         </div>
 
         {/* Right Side: Image */}
-        <div className="w-1/2 hidden md:block">
+        <div className="w-1/2 hidden md:block ml-14">
           <img
             src="/src/assets/chatimage.png"
             alt="Chat Illustration"
